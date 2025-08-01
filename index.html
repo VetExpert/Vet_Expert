@@ -508,7 +508,7 @@
                 <p data-key="ai-disclaimer"><strong>ИИ консультант предоставляет только справочную информацию!</strong> Это не замена профессиональной ветеринарной помощи. Обязательно обратитесь к ветеринару для точного диагноза.</p>
             </div>
 
-            <div class="api-setup">
+            <div class="api-setup" id="api-setup">
                 <h4 data-key="api-setup-title">Настройка ИИ (для администратора)</h4>
                 <input type="password" id="groq-api-key" class="api-input" placeholder="Введите Groq API ключ" data-key="api-placeholder">
                 <button onclick="setupAPI()" class="btn btn-secondary" data-key="api-connect">Подключить ИИ</button>
@@ -557,6 +557,7 @@
                 'api-placeholder': 'Введите Groq API ключ',
                 'api-connect': 'Подключить ИИ',
                 'api-not-connected': 'ИИ не подключен',
+                'api-connected': 'ИИ подключен ✅',
                 'api-instruction': 'Получите бесплатный API ключ на',
                 'ai-greeting': 'Здравствуйте! Я ИИ ветеринарный консультант. Опишите симптомы вашего питомца, и я помогу с первичными рекомендациями. Помните: это не заменяет визита к ветеринару!',
                 'ai-typing': 'Печатает ответ...',
@@ -586,6 +587,7 @@
                 'api-placeholder': 'Enter Groq API key',
                 'api-connect': 'Connect AI',
                 'api-not-connected': 'AI not connected',
+                'api-connected': 'AI connected ✅',
                 'api-instruction': 'Get a free API key at',
                 'ai-greeting': 'Hello! I am an AI veterinary consultant. Describe your pet\'s symptoms, and I will help with initial recommendations. Remember: this does not replace a veterinary visit!',
                 'ai-typing': 'Typing response...',
@@ -615,6 +617,7 @@
                 'api-placeholder': 'Ingrese la clave API de Groq',
                 'api-connect': 'Conectar IA',
                 'api-not-connected': 'IA no conectada',
+                'api-connected': 'IA conectada ✅',
                 'api-instruction': 'Obtenga una clave API gratuita en',
                 'ai-greeting': '¡Hola! Soy un consultor veterinario IA. Describe los síntomas de tu mascota, y te ayudaré con recomendaciones iniciales. ¡Recuerda: esto no reemplaza una visita veterinaria!',
                 'ai-typing': 'Escribiendo respuesta...',
@@ -644,6 +647,7 @@
                 'api-placeholder': 'Entrez la clé API Groq',
                 'api-connect': 'Connecter IA',
                 'api-not-connected': 'IA non connectée',
+                'api-connected': 'IA connectée ✅',
                 'api-instruction': 'Obtenez une clé API gratuite sur',
                 'ai-greeting': 'Bonjour! Je suis un consultant vétérinaire IA. Décrivez les symptômes de votre animal, et je vous aiderai avec des recommandations initiales. Rappelez-vous: cela ne remplace pas une visite vétérinaire!',
                 'ai-typing': 'Tape une réponse...',
@@ -656,175 +660,20 @@
         let groqApiKey = '';
         let isAIConnected = false;
 
-        // Language switching
-        function changeLanguage(lang) {
-            currentLanguage = lang;
-            
-            // Update active button
-            document.querySelectorAll('.lang-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.classList.add('active');
-            
-            // Update all translated elements
-            document.querySelectorAll('[data-key]').forEach(element => {
-                const key = element.getAttribute('data-key');
-                if (translations[lang] && translations[lang][key]) {
-                    if (element.tagName === 'INPUT' && element.type !== 'button') {
-                        element.placeholder = translations[lang][key];
-                    } else {
-                        element.innerHTML = translations[lang][key];
-                    }
-                }
-            });
-            
-            // Update page title
-            document.title = translations[lang]['page-title'] || document.title;
-        }
-
-        // API Setup
-        function setupAPI() {
-            const apiKey = document.getElementById('groq-api-key').value.trim();
-            if (!apiKey) {
-                alert('Пожалуйста, введите API ключ');
-                return;
-            }
-            
-            groqApiKey = apiKey;
-            isAIConnected = true;
-            
-            const statusElement = document.getElementById('api-status');
-            statusElement.textContent = 'ИИ подключен ✅';
-            statusElement.className = 'api-status connected';
-            
-            // Hide API setup after connection
-            document.querySelector('.api-setup').style.display = 'none';
-        }
-
-        // AI Chat functionality
-        async function sendMessage() {
-            const input = document.getElementById('chat-input');
-            const message = input.value.trim();
-            
-            if (!message) return;
-            
-            if (!isAIConnected) {
-                alert('Сначала подключите ИИ через API ключ');
-                return;
-            }
-            
-            // Add user message
-            addMessage(message, 'user');
-            input.value = '';
-            
-            // Show typing indicator
-            showTyping(true);
-            
-            // Disable send button
-            const sendBtn = document.getElementById('send-btn');
-            sendBtn.disabled = true;
-            sendBtn.innerHTML = '<div class="loading"></div>';
-            
-            try {
-                const aiResponse = await getAIResponse(message);
-                addMessage(aiResponse, 'ai');
-            } catch (error) {
-                addMessage('Извините, произошла ошибка при получении ответа. Проверьте API ключ и подключение к интернету.', 'ai');
-                console.error('AI Error:', error);
-            }
-            
-            // Hide typing indicator and enable button
-            showTyping(false);
-            sendBtn.disabled = false;
-            sendBtn.textContent = translations[currentLanguage]['send-btn'] || 'Отправить';
-        }
-
-        function addMessage(text, sender) {
-            const messagesContainer = document.getElementById('chat-messages');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${sender}`;
-            messageDiv.textContent = text;
-            messagesContainer.appendChild(messageDiv);
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        }
-
-        function showTyping(show) {
-            const typingIndicator = document.getElementById('typing-indicator');
-            typingIndicator.style.display = show ? 'block' : 'none';
-        }
-
-        async function getAIResponse(userMessage) {
-            const systemPrompt = `Вы - ветеринарный консультант ИИ. Отвечайте на ${currentLanguage} языке.
-
-ВАЖНЫЕ ПРАВИЛА:
-1. ВСЕГДА начинайте ответ с предупреждения: "⚠️ Это справочная информация. Обязательно обратитесь к ветеринару!"
-2. Давайте только общие рекомендации первой помощи
-3. НЕ ставьте конкретных диагнозов
-4. НЕ назначайте лекарства без указания "только по назначению ветеринара"
-5. Если симптомы серьёзные - настоятельно рекомендуйте срочное обращение к врачу
-6. Отвечайте кратко и понятно
-7. Если вопрос не о ветеринарии - вежливо перенаправьте на тему животных`;
-
-            const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${groqApiKey}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    model: 'llama-3.1-70b-versatile',
-                    messages: [
-                        { role: 'system', content: systemPrompt },
-                        { role: 'user', content: userMessage }
-                    ],
-                    max_tokens: 500,
-                    temperature: 0.7
-                })
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-            }
-
-            const data = await response.json();
-            return data.choices[0].message.content;
-        }
-
-        // Enter key support for chat
-        document.addEventListener('DOMContentLoaded', function() {
-            const chatInput = document.getElementById('chat-input');
-            if (chatInput) {
-                chatInput.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        sendMessage();
-                    }
-                });
-            }
+        // Load saved API key on page load
+        window.addEventListener('DOMContentLoaded', function() {
+            loadSavedApiKey();
         });
 
-        // Smooth scrolling for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
-
-        // Auto-hide API setup after 30 seconds if not used
-        setTimeout(() => {
-            if (!isAIConnected) {
-                const apiSetup = document.querySelector('.api-setup');
-                if (apiSetup) {
-                    apiSetup.style.opacity = '0.7';
-                }
-            }
-        }, 30000);
-    </script>
-</body>
-</html>
+        // Load API key from localStorage
+        function loadSavedApiKey() {
+            const savedApiKey = localStorage.getItem('vetexpert_groq_api_key');
+            if (savedApiKey) {
+                groqApiKey = savedApiKey;
+                isAIConnected = true;
+                
+                // Fill the input
+                document.getElementById('groq-api-key').value = savedApiKey;
+                
+                // Update status
+                const
