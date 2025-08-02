@@ -1,0 +1,137 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VetExpert — Ветеринарный ассистент</title>
+  <style>
+    body { font-family: sans-serif; margin: 0; padding: 0; background: #f9f9f9; }
+    header { background: #4b5563; color: white; padding: 1rem; text-align: center; }
+    main { padding: 1rem; max-width: 900px; margin: auto; }
+    h1 { margin: 0; font-size: 1.5rem; }
+    .tabs { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
+    .tab-button { padding: 0.5rem 1rem; border: none; cursor: pointer; background: #e5e7eb; border-radius: 5px; }
+    .tab-button.active { background: #2563eb; color: white; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .chat-box, .meds-list, .disease-list { background: white; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
+    .message { margin: 0.5rem 0; }
+    .user { text-align: right; color: #111827; }
+    .bot { text-align: left; color: #2563eb; }
+    input, textarea, button { font-size: 1rem; padding: 0.5rem; margin-top: 0.5rem; width: 100%; box-sizing: border-box; }
+    button.send-btn { width: auto; background: #2563eb; color: white; border: none; margin-top: 0.5rem; border-radius: 4px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <header><h1>🐾 VetExpert — Ветеринарный ассистент</h1></header>
+  <main>
+    <div class="tabs">
+      <button class="tab-button active" data-tab="chat">🔍 Симптомы</button>
+      <button class="tab-button" data-tab="meds">💊 Препараты</button>
+      <button class="tab-button" data-tab="disease">📚 Заболевания</button>
+      <button class="tab-button" data-tab="about">ℹ️ Инструкция</button>
+    </div>
+
+    <div id="chat" class="tab-content active">
+      <div class="chat-box" id="chat-box">
+        <div class="message bot">Здравствуйте! Укажите вид животного и симптомы.</div>
+      </div>
+      <textarea id="chat-input" placeholder="Опишите симптомы..."></textarea>
+      <button class="send-btn" onclick="sendMessage()">Отправить</button>
+    </div>
+
+    <div id="meds" class="tab-content">
+      <div class="meds-list">
+        <h3>💊 Энрофлоксацин (Инъекция 5%)</h3>
+        <p><strong>Действие:</strong> Противомикробное средство широкого спектра</p>
+        <p><strong>Дозировка:</strong> Собаки: 5 мг/кг, Кошки: 5 мг/кг, КРС: 2,5 мг/кг</p>
+        <p><strong>Побочные эффекты:</strong> Редко: рвота, потеря аппетита</p>
+        <p><strong>Сроки выведения:</strong> 7 дней (мясо)</p>
+      </div>
+    </div>
+
+    <div id="disease" class="tab-content">
+      <div class="disease-list">
+        <h3>🐶 Гастроэнтерит (Gastroenteritis)</h3>
+        <p><strong>Этиология:</strong> Вирусы, бактерии, паразиты, питание</p>
+        <p><strong>Симптомы:</strong> рвота, понос, вялость, отказ от корма</p>
+        <p><strong>Диагностика:</strong> УЗИ, анализ крови и кала</p>
+        <p><strong>Лечение:</strong> Регидратация, антибиотики, сорбенты</p>
+        <p><strong>Прогноз:</strong> Благоприятный при своевременном лечении</p>
+      </div>
+    </div>
+
+    <div id="about" class="tab-content">
+      <div class="chat-box">
+        <p>💡 Этот сайт помогает определить вероятное заболевание животного по симптомам и предлагает препараты.</p>
+        <p>📍 Введите симптомы — и система подскажет диагноз.</p>
+        <p>🔍 Можно вручную изучить список заболеваний и лекарств.</p>
+        <p>🌐 Работает без интернета, всё встроено.</p>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const tabs = document.querySelectorAll('.tab-button');
+    const contents = document.querySelectorAll('.tab-content');
+    tabs.forEach(btn => {
+      btn.addEventListener('click', () => {
+        tabs.forEach(b => b.classList.remove('active'));
+        contents.forEach(c => c.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById(btn.dataset.tab).classList.add('active');
+      });
+    });
+
+    const symptomsDictionary = {
+      "понос": ["диарея", "жидкий стул", "расстройство желудка"],
+      "рвота": ["блюет", "срыгивает", "тошнота"],
+      "не ест": ["анорексия", "отказывается от еды", "плохой аппетит"],
+      "чешется": ["зуд", "расчесывает", "грызет себя"]
+    };
+
+    const diseases = [{
+      animal: "Собаки",
+      system: "Пищеварительная",
+      name: "Гастроэнтерит",
+      latin: "Gastroenteritis",
+      etiology: "Вирусы, бактерии, паразиты, питание",
+      symptoms: ["рвота", "понос", "вялость", "отказ от корма"],
+      diagnosis: "УЗИ, анализ крови и кала",
+      treatment: "Регидратация, антибиотики, сорбенты",
+      prognosis: "Благоприятный при своевременном лечении"
+    }];
+
+    const medications = [{
+      name: "Энрофлоксацин",
+      form: "Инъекция 5%",
+      dosage: { "Собаки": "5 мг/кг", "Кошки": "5 мг/кг", "КРС": "2,5 мг/кг" }
+    }];
+
+    function sendMessage() {
+      const input = document.getElementById("chat-input");
+      const msgBox = document.getElementById("chat-box");
+      const userText = input.value.trim();
+      if (!userText) return;
+      msgBox.innerHTML += `<div class="message user">${userText}</div>`;
+
+      const parsed = userText.toLowerCase();
+      let matchedSymptoms = Object.entries(symptomsDictionary)
+        .filter(([k, v]) => parsed.includes(k) || v.some(s => parsed.includes(s)))
+        .map(([k]) => k);
+      let found = diseases.find(d => matchedSymptoms.some(s => d.symptoms.includes(s)));
+
+      let botText = "Не удалось определить заболевание. Обратитесь к ветеринару.";
+      if (found) {
+        const meds = medications.map(m => `💊 ${m.name} (${m.form}): ${m.dosage[found.animal] || "дозировка уточняется"}`).join("<br>");
+        botText = `Возможно: <strong>${found.name}</strong> (${found.latin})<br><br><strong>Симптомы:</strong> ${found.symptoms.join(", ")}<br><strong>Диагностика:</strong> ${found.diagnosis}<br><strong>Лечение:</strong> ${found.treatment}<br><strong>Препараты:</strong><br>${meds}<br><strong>Прогноз:</strong> ${found.prognosis}`;
+      }
+
+      msgBox.innerHTML += `<div class="message bot">${botText}</div>`;
+      msgBox.scrollTop = msgBox.scrollHeight;
+      input.value = "";
+    }
+  </script>
+</body>
+</html>
