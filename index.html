@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="page-title">VetExpert - База знаний ветеринарии | Полина Рябухина</title>
+    <title>VetExpert - Ветеринарный ИИ консультант</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐕</text></svg>">
     <style>
         * {
             margin: 0;
@@ -13,1145 +14,552 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #333;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
+            color: #333;
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        header {
-            background: rgba(255, 255, 255, 0.95);
+        .header {
+            background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
-            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .header-content {
+            padding: 1rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .logo {
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: #4a90e2;
-            text-decoration: none;
-        }
-
-        .header-right {
             display: flex;
             align-items: center;
-            gap: 2rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        .logo-icon {
+            font-size: 2rem;
+            margin-right: 0.5rem;
         }
 
         .language-selector {
             display: flex;
             gap: 0.5rem;
-            align-items: center;
         }
 
         .lang-btn {
-            background: none;
-            border: 2px solid #4a90e2;
             padding: 0.5rem 1rem;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.3s;
-            color: #4a90e2;
-        }
-
-        .lang-btn.active {
-            background: #4a90e2;
-            color: white;
-        }
-
-        .lang-btn:hover {
-            background: #4a90e2;
-            color: white;
-        }
-
-        .expert-info {
-            text-align: right;
-            font-size: 0.9rem;
-            color: #666;
-        }
-
-        .expert-name {
-            font-weight: bold;
-            color: #333;
-        }
-
-        nav ul {
-            list-style: none;
-            display: flex;
-            gap: 2rem;
-        }
-
-        nav a {
-            text-decoration: none;
-            color: #333;
-            font-weight: 500;
-            transition: color 0.3s;
-        }
-
-        nav a:hover {
-            color: #4a90e2;
-        }
-
-        .hero {
+            border: 2px solid rgba(255, 255, 255, 0.3);
             background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            padding: 4rem 0;
-            text-align: center;
             color: white;
-            margin: 2rem 0;
             border-radius: 20px;
-        }
-
-        .hero h1 {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-
-        .hero p {
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
-            opacity: 0.9;
-        }
-
-        .cta-buttons {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 15px 30px;
-            border: none;
-            border-radius: 50px;
-            font-size: 1rem;
-            font-weight: 600;
-            text-decoration: none;
             cursor: pointer;
             transition: all 0.3s ease;
-            text-align: center;
-            min-width: 200px;
+            text-decoration: none;
+            font-size: 0.9rem;
         }
 
-        .btn-primary {
-            background: #4a90e2;
+        .lang-btn:hover, .lang-btn.active {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .user-info {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
             color: white;
-        }
-
-        .btn-secondary {
-            background: #28a745;
-            color: white;
-        }
-
-        .btn-emergency {
-            background: #dc3545;
-            color: white;
-            animation: pulse 2s infinite;
-        }
-
-        .btn-ai {
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            color: white;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn-ai::before {
-            content: '🤖';
-            margin-right: 0.5rem;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
 
         .main-content {
-            background: white;
-            margin: 2rem 0;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        }
-
-        .tab-container {
-            background: #f8f9fa;
-            padding: 0;
-        }
-
-        .tab-buttons {
-            display: flex;
-            background: #e9ecef;
-            overflow-x: auto;
-        }
-
-        .tab-btn {
-            background: none;
-            border: none;
-            padding: 1rem 2rem;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: 500;
-            white-space: nowrap;
-            transition: all 0.3s;
-            border-bottom: 3px solid transparent;
-        }
-
-        .tab-btn.active {
-            background: white;
-            border-bottom-color: #4a90e2;
-            color: #4a90e2;
-        }
-
-        .tab-content {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
             padding: 2rem;
-            display: none;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        .tab-content.active {
-            display: block;
-        }
-
-        .search-box {
+        .quick-connect {
+            text-align: center;
             margin-bottom: 2rem;
         }
 
-        .search-input {
-            width: 100%;
-            padding: 15px;
-            font-size: 1rem;
-            border: 2px solid #e9ecef;
-            border-radius: 10px;
-            transition: border-color 0.3s;
-        }
-
-        .search-input:focus {
-            outline: none;
-            border-color: #4a90e2;
-        }
-
-        .legal-disclaimer {
-            background: rgba(255, 193, 7, 0.1);
-            border: 2px solid rgba(255, 193, 7, 0.3);
-            padding: 1.5rem;
-            border-radius: 15px;
-            margin: 2rem 0;
-            backdrop-filter: blur(10px);
-        }
-
-        .legal-disclaimer h3 {
-            color: #856404;
+        .quick-connect h2 {
+            color: white;
             margin-bottom: 1rem;
+            font-size: 1.8rem;
+        }
+
+        .quick-connect p {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 1.5rem;
+        }
+
+        .connect-btn {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        .connect-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+        }
+
+        .status-info {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-        }
-
-        .legal-disclaimer p {
-            color: #856404;
-            line-height: 1.6;
-            margin-bottom: 0.5rem;
-        }
-
-        .legal-disclaimer strong {
-            color: #495057;
-        }
-
-        /* AI Chat Styles */
-        .ai-chat-container {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border-radius: 20px;
-            padding: 2rem;
-            margin: 2rem 0;
+            gap: 1rem;
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
             color: white;
         }
 
-        .chat-messages {
-            max-height: 400px;
-            overflow-y: auto;
-            background: rgba(255,255,255,0.1);
-            border-radius: 15px;
-            padding: 1rem;
-            margin: 1rem 0;
+        .status-icon {
+            font-size: 1.5rem;
+        }
+
+        .ai-consultant {
+            background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .ai-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            color: white;
+        }
+
+        .ai-icon {
+            font-size: 2rem;
+            margin-right: 1rem;
+        }
+
+        .ai-description {
+            color: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+
+        .chat-container {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            padding: 1rem;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            max-height: 400px;
         }
 
         .message {
             margin-bottom: 1rem;
-            padding: 1rem;
+            padding: 0.8rem;
             border-radius: 10px;
             max-width: 80%;
-            word-wrap: break-word;
         }
 
-        .message.user {
-            background: rgba(255,255,255,0.2);
+        .user-message {
+            background: #e3f2fd;
             margin-left: auto;
             text-align: right;
         }
 
-        .message.ai {
-            background: rgba(255,255,255,0.3);
+        .ai-message {
+            background: #f1f8e9;
             margin-right: auto;
         }
 
-        .message.ai::before {
-            content: '🤖 AI Ветеринар: ';
-            font-weight: bold;
-        }
-
-        .chat-input-container {
+        .input-container {
             display: flex;
-            gap: 1rem;
-            align-items: center;
+            gap: 0.5rem;
         }
 
-        .chat-input {
+        .symptom-input {
             flex: 1;
             padding: 1rem;
-            border: none;
+            border: 2px solid #ddd;
             border-radius: 25px;
             font-size: 1rem;
-            background: rgba(255,255,255,0.9);
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .symptom-input:focus {
+            border-color: #4CAF50;
         }
 
         .send-btn {
-            background: #28a745;
+            background: linear-gradient(45deg, #4CAF50, #45a049);
             color: white;
             border: none;
-            padding: 1rem 2rem;
+            padding: 1rem 1.5rem;
             border-radius: 25px;
             cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
         }
 
         .send-btn:hover {
-            background: #218838;
-            transform: scale(1.05);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3);
         }
 
         .send-btn:disabled {
-            background: #6c757d;
+            opacity: 0.6;
             cursor: not-allowed;
-            transform: none;
         }
 
         .typing-indicator {
             display: none;
-            color: #ffc107;
+            color: #666;
             font-style: italic;
             padding: 0.5rem;
         }
 
-        .typing-indicator::before {
-            content: '🤖 ';
-        }
-
-        /* API Setup */
-        .api-setup {
-            background: rgba(255,255,255,0.1);
-            border-radius: 15px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
+        .disclaimer {
+            background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
-        }
-
-        .api-input {
-            width: 100%;
-            padding: 1rem;
-            border: none;
-            border-radius: 10px;
-            font-size: 1rem;
-            margin: 0.5rem 0;
-        }
-
-        .api-status {
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-weight: 600;
-            display: inline-block;
-            margin-top: 1rem;
-        }
-
-        .api-status.connected {
-            background: #28a745;
-            color: white;
-        }
-
-        .api-status.error {
-            background: #dc3545;
-            color: white;
-        }
-
-        /* Quick Connect */
-        .quick-connect {
-            background: rgba(40, 167, 69, 0.1);
-            border: 2px solid rgba(40, 167, 69, 0.3);
             border-radius: 15px;
             padding: 1.5rem;
-            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
             text-align: center;
-        }
-
-        .quick-connect h4 {
-            color: #155724;
-            margin-bottom: 1rem;
-        }
-
-        .quick-connect p {
-            color: #155724;
-            margin-bottom: 1rem;
-        }
-
-        .model-info {
-            background: rgba(0, 123, 255, 0.1);
-            border: 1px solid rgba(0, 123, 255, 0.3);
-            border-radius: 10px;
-            padding: 1rem;
-            margin: 1rem 0;
             font-size: 0.9rem;
+            line-height: 1.6;
         }
 
-        /* Responsive */
+        .disclaimer strong {
+            color: #ffeb3b;
+        }
+
         @media (max-width: 768px) {
-            .header-content {
+            .header {
+                padding: 1rem;
                 flex-direction: column;
                 gap: 1rem;
             }
 
-            .header-right {
-                flex-direction: column;
-                gap: 1rem;
+            .container {
+                padding: 1rem;
             }
 
-            .hero h1 {
-                font-size: 2rem;
+            .main-content, .ai-consultant {
+                padding: 1rem;
             }
 
-            .cta-buttons {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .chat-input-container {
-                flex-direction: column;
-                gap: 0.5rem;
-            }
-
-            .chat-input {
-                width: 100%;
+            .message {
+                max-width: 95%;
             }
         }
 
-        /* Loading animation */
         .loading {
             display: inline-block;
             width: 20px;
             height: 20px;
-            border: 3px solid rgba(255,255,255,.3);
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #4CAF50;
             border-radius: 50%;
-            border-top-color: #fff;
-            animation: spin 1s ease-in-out infinite;
+            animation: spin 1s linear infinite;
         }
 
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
-    <header>
-        <div class="container">
-            <div class="header-content">
-                <a href="#" class="logo">🐾 VetExpert</a>
-                <div class="header-right">
-                    <div class="language-selector">
-                        <span data-key="language">Язык:</span>
-                        <button class="lang-btn active" onclick="changeLanguage('ru')">🇷🇺 RU</button>
-                        <button class="lang-btn" onclick="changeLanguage('en')">🇺🇸 EN</button>
-                        <button class="lang-btn" onclick="changeLanguage('es')">🇪🇸 ES</button>
-                        <button class="lang-btn" onclick="changeLanguage('fr')">🇫🇷 FR</button>
-                    </div>
-                    <div class="expert-info">
-                        <div class="expert-name">Полина Вячеславовна Рябухина</div>
-                        <div data-key="expert-title">Студентка ветеринарного техникума</div>
-                    </div>
-                </div>
-            </div>
+    <header class="header">
+        <div class="logo">
+            <span class="logo-icon">🐕</span>
+            VetExpert
+        </div>
+        <div class="language-selector">
+            <a href="#" class="lang-btn active" data-lang="ru">🇷🇺 RU</a>
+            <a href="#" class="lang-btn" data-lang="en">🇺🇸 EN</a>
+            <a href="#" class="lang-btn" data-lang="es">🇪🇸 ES</a>
+            <a href="#" class="lang-btn" data-lang="fr">🇫🇷 FR</a>
         </div>
     </header>
 
     <div class="container">
-        <section class="hero">
-            <h1 data-key="hero-title">База знаний ветеринарии</h1>
-            <p data-key="hero-subtitle">Бесплатная экспертная информация о болезнях и лечении животных</p>
-            
-            <div class="legal-disclaimer">
-                <h3 data-key="legal-warning">⚖️ Важное юридическое уведомление</h3>
-                <p data-key="legal-info"><strong>Внимание!</strong> Информация на данном сайте носит исключительно справочный и образовательный характер.</p>
-                <p data-key="legal-no-replace"><strong>Онлайн-консультации и информация из базы данных НЕ ЗАМЕНЯЮТ очного осмотра ветеринарного врача.</strong></p>
-                <p data-key="legal-responsibility">Владелец сайта (Рябухина Полина Вячеславовна) не несёт ответственности за последствия самолечения животных на основе информации, представленной на сайте.</p>
-                <p data-key="legal-visit"><strong>При любых симптомах заболевания животного обязательно обратитесь к квалифицированному ветеринарному врачу для очного осмотра и постановки точного диагноза.</strong></p>
-            </div>
-            
-            <div class="cta-buttons">
-                <a href="#database" class="btn btn-primary" data-key="btn-search">Поиск по базе</a>
-                <a href="#ai-chat" class="btn btn-ai" data-key="btn-ai-chat">ИИ Консультант</a>
-                <a href="#contact" class="btn btn-secondary" data-key="btn-human-chat">Чат со специалистом</a>
-                <a href="#contact" class="btn btn-emergency" data-key="btn-emergency">Экстренный звонок</a>
-            </div>
-        </section>
+        <div class="user-info">
+            <h3>Полина Вячеславовна Рябухина</h3>
+            <p>Студентка ветеринарного техникума</p>
+        </div>
 
-        <!-- AI Chat Section -->
-        <section id="ai-chat" class="ai-chat-container">
-            <h2 data-key="ai-chat-title">🤖 ИИ Ветеринарный Консультант</h2>
-            <p data-key="ai-chat-subtitle">Бесплатная консультация с искусственным интеллектом</p>
-            
-            <div class="legal-disclaimer">
-                <h3 data-key="ai-warning">⚠️ Важное предупреждение об ИИ</h3>
-                <p data-key="ai-disclaimer"><strong>ИИ консультант предоставляет только справочную информацию!</strong> Это не замена профессиональной ветеринарной помощи. Обязательно обратитесь к ветеринару для точного диагноза.</p>
-            </div>
-
-            <!-- Quick Connect Option -->
+        <div class="main-content">
             <div class="quick-connect">
-                <h4 data-key="quick-connect-title">🚀 Быстрое подключение</h4>
-                <p data-key="quick-connect-desc">Для мгновенного доступа к ИИ консультанту нажмите кнопку ниже:</p>
-                <button onclick="quickConnectAI()" class="btn btn-secondary" data-key="quick-connect-btn">Активировать ИИ сейчас</button>
-            </div>
-
-            <div class="api-setup" id="api-setup" style="display: none;">
-                <h4 data-key="api-setup-title">Настройка ИИ (дополнительно)</h4>
-                <input type="password" id="groq-api-key" class="api-input" placeholder="Введите Groq API ключ" data-key="api-placeholder">
-                <button onclick="setupAPI()" class="btn btn-secondary" data-key="api-connect" id="api-connect-btn">Подключить ИИ</button>
-                <div id="api-status" class="api-status" data-key="api-not-connected">ИИ не подключен</div>
-                <p><small data-key="api-instruction">Получите бесплатный API ключ на <a href="https://console.groq.com" target="_blank">console.groq.com</a></small></p>
-            </div>
-
-            <div class="model-info">
-                <strong>🔧 Текущая модель:</strong> <span id="current-model">Llama-3.1-8B (рекомендуемая)</span><br>
-                <strong>📊 Статус:</strong> <span id="model-status">Готов к работе</span>
-            </div>
-
-            <div class="chat-messages" id="chat-messages">
-                <div class="message ai" data-key="ai-greeting">
-                    Здравствуйте! Я ИИ ветеринарный консультант. Опишите симптомы вашего питомца, и я помогу с первичными рекомендациями. Помните: это не заменяет визита к ветеринару!
+                <h2>🚀 Быстрое подключение</h2>
+                <p>Для мгновенного доступа к ИИ консультанту нажмите кнопку ниже:</p>
+                <button class="connect-btn" onclick="activateAI()">Активировать ИИ сейчас</button>
+                
+                <div class="status-info">
+                    <span class="status-icon">⚙️</span>
+                    <div>
+                        <strong>Текущая модель:</strong> <span id="current-model">Демо-режим (ограниченный)</span><br>
+                        <strong>Статус:</strong> <span id="ai-status">Работает в демо-режиме</span>
+                    </div>
                 </div>
             </div>
-            
-            <div class="typing-indicator" id="typing-indicator" data-key="ai-typing">Печатает ответ...</div>
-            
-            <div class="chat-input-container">
-                <input type="text" id="chat-input" class="chat-input" placeholder="Опишите симптомы вашего питомца..." data-key="chat-placeholder">
-                <button onclick="sendMessage()" id="send-btn" class="send-btn" data-key="send-btn">Отправить</button>
+        </div>
+
+        <div class="ai-consultant">
+            <div class="ai-header">
+                <span class="ai-icon">🤖</span>
+                <h2>ИИ Ветеринар</h2>
             </div>
-        </section>
+            
+            <div class="ai-description">
+                <p><strong>Здравствуйте! Я ИИ ветеринарный консультант.</strong> Опишите симптомы вашего питомца, и я помогу с первичными рекомендациями. Помните: это не заменяет визита к ветеринару!</p>
+            </div>
+
+            <div class="ai-description">
+                <p><strong>🎯 ИИ консультант запущен в демо-режиме.</strong> Функциональность ограничена, но я могу помочь с базовыми вопросами!</p>
+            </div>
+
+            <div class="chat-container">
+                <div class="chat-messages" id="chatMessages">
+                    <div class="message ai-message">
+                        <strong>🤖 ИИ Ветеринар:</strong> Добро пожаловать! Опишите симптомы вашего питомца, и я постараюсь помочь с первичной консультацией.
+                    </div>
+                </div>
+                
+                <div class="typing-indicator" id="typingIndicator">
+                    <span class="loading"></span> ИИ печатает ответ...
+                </div>
+                
+                <div class="input-container">
+                    <input type="text" 
+                           class="symptom-input" 
+                           id="symptomInput" 
+                           placeholder="Опишите симптомы вашего питомца..."
+                           onkeypress="handleKeyPress(event)">
+                    <button class="send-btn" onclick="sendMessage()" id="sendBtn">Отправить</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="disclaimer">
+            <strong>⚠️ Важное предупреждение:</strong><br>
+            Данная консультация носит исключительно информационный характер и НЕ ЗАМЕНЯЕТ профессионального ветеринарного осмотра. 
+            При любых серьезных симптомах немедленно обратитесь к квалифицированному ветеринару. 
+            Владелец сервиса не несет ответственности за последствия самолечения животных.
+        </div>
     </div>
 
     <script>
-        // Translations
-        const translations = {
-            ru: {
-                'page-title': 'VetExpert - База знаний ветеринарии | Полина Рябухина',
-                'language': 'Язык:',
-                'expert-title': 'Студентка ветеринарного техникума',
-                'hero-title': 'База знаний ветеринарии',
-                'hero-subtitle': 'Бесплатная экспертная информация о болезнях и лечении животных',
-                'legal-warning': '⚖️ Важное юридическое уведомление',
-                'legal-info': 'Внимание! Информация на данном сайте носит исключительно справочный и образовательный характер.',
-                'legal-no-replace': 'Онлайн-консультации и информация из базы данных НЕ ЗАМЕНЯЮТ очного осмотра ветеринарного врача.',
-                'legal-responsibility': 'Владелец сайта (Рябухина Полина Вячеславовна) не несёт ответственности за последствия самолечения животных на основе информации, представленной на сайте.',
-                'legal-visit': 'При любых симптомах заболевания животного обязательно обратитесь к квалифицированному ветеринарному врачу для очного осмотра и постановки точного диагноза.',
-                'btn-search': 'Поиск по базе',
-                'btn-ai-chat': 'ИИ Консультант',
-                'btn-human-chat': 'Чат со специалистом',
-                'btn-emergency': 'Экстренный звонок',
-                'ai-chat-title': '🤖 ИИ Ветеринарный Консультант',
-                'ai-chat-subtitle': 'Бесплатная консультация с искусственным интеллектом',
-                'ai-warning': '⚠️ Важное предупреждение об ИИ',
-                'ai-disclaimer': 'ИИ консультант предоставляет только справочную информацию! Это не замена профессиональной ветеринарной помощи. Обязательно обратитесь к ветеринару для точного диагноза.',
-                'quick-connect-title': '🚀 Быстрое подключение',
-                'quick-connect-desc': 'Для мгновенного доступа к ИИ консультанту нажмите кнопку ниже:',
-                'quick-connect-btn': 'Активировать ИИ сейчас',
-                'api-setup-title': 'Настройка ИИ (дополнительно)',
-                'api-placeholder': 'Введите Groq API ключ',
-                'api-connect': 'Подключить ИИ',
-                'api-not-connected': 'ИИ не подключен',
-                'api-connected': 'ИИ подключен ✅',
-                'api-instruction': 'Получите бесплатный API ключ на',
-                'ai-greeting': 'Здравствуйте! Я ИИ ветеринарный консультант. Опишите симптомы вашего питомца, и я помогу с первичными рекомендациями. Помните: это не заменяет визита к ветеринару!',
-                'ai-typing': 'Печатает ответ...',
-                'chat-placeholder': 'Опишите симптомы вашего питомца...',
-                'send-btn': 'Отправить'
-            },
-            en: {
-                'page-title': 'VetExpert - Veterinary Knowledge Base | Polina Ryabukhina',
-                'language': 'Language:',
-                'expert-title': 'Veterinary College Student',
-                'hero-title': 'Veterinary Knowledge Base',
-                'hero-subtitle': 'Free expert information on animal diseases and treatment',
-                'legal-warning': '⚖️ Important Legal Notice',
-                'legal-info': 'Attention! The information on this site is for reference and educational purposes only.',
-                'legal-no-replace': 'Online consultations and database information DO NOT REPLACE an in-person veterinary examination.',
-                'legal-responsibility': 'The site owner (Polina Ryabukhina) is not responsible for the consequences of animal self-treatment based on information presented on the site.',
-                'legal-visit': 'For any symptoms of animal illness, be sure to contact a qualified veterinarian for an in-person examination and accurate diagnosis.',
-                'btn-search': 'Search Database',
-                'btn-ai-chat': 'AI Consultant',
-                'btn-human-chat': 'Chat with Specialist',
-                'btn-emergency': 'Emergency Call',
-                'ai-chat-title': '🤖 AI Veterinary Consultant',
-                'ai-chat-subtitle': 'Free consultation with artificial intelligence',
-                'ai-warning': '⚠️ Important AI Warning',
-                'ai-disclaimer': 'AI consultant provides reference information only! This is not a replacement for professional veterinary care. Be sure to contact a veterinarian for accurate diagnosis.',
-                'quick-connect-title': '🚀 Quick Connect',
-                'quick-connect-desc': 'For instant access to AI consultant click the button below:',
-                'quick-connect-btn': 'Activate AI Now',
-                'api-setup-title': 'AI Setup (additional)',
-                'api-placeholder': 'Enter Groq API key',
-                'api-connect': 'Connect AI',
-                'api-not-connected': 'AI not connected',
-                'api-connected': 'AI connected ✅',
-                'api-instruction': 'Get a free API key at',
-                'ai-greeting': 'Hello! I am an AI veterinary consultant. Describe your pet\'s symptoms, and I will help with initial recommendations. Remember: this does not replace a veterinary visit!',
-                'ai-typing': 'Typing response...',
-                'chat-placeholder': 'Describe your pet\'s symptoms...',
-                'send-btn': 'Send'
-            },
-            es: {
-                'page-title': 'VetExpert - Base de Conocimientos Veterinarios | Polina Ryabukhina',
-                'language': 'Idioma:',
-                'expert-title': 'Estudiante de Colegio Veterinario',
-                'hero-title': 'Base de Conocimientos Veterinarios',
-                'hero-subtitle': 'Información experta gratuita sobre enfermedades y tratamiento de animales',
-                'legal-warning': '⚖️ Aviso Legal Importante',
-                'legal-info': '¡Atención! La información en este sitio es solo para fines de referencia y educativos.',
-                'legal-no-replace': 'Las consultas en línea y la información de la base de datos NO REEMPLAZAN un examen veterinario en persona.',
-                'legal-responsibility': 'El propietario del sitio (Polina Ryabukhina) no es responsable de las consecuencias del auto-tratamiento animal basado en la información presentada en el sitio.',
-                'legal-visit': 'Para cualquier síntoma de enfermedad animal, asegúrese de contactar a un veterinario calificado para un examen en persona y diagnóstico preciso.',
-                'btn-search': 'Buscar en Base',
-                'btn-ai-chat': 'Consultor IA',
-                'btn-human-chat': 'Chat con Especialista',
-                'btn-emergency': 'Llamada de Emergencia',
-                'ai-chat-title': '🤖 Consultor Veterinario IA',
-                'ai-chat-subtitle': 'Consulta gratuita con inteligencia artificial',
-                'ai-warning': '⚠️ Advertencia Importante sobre IA',
-                'ai-disclaimer': '¡El consultor IA proporciona solo información de referencia! Esto no es un reemplazo para la atención veterinaria profesional. Asegúrese de contactar a un veterinario para un diagnóstico preciso.',
-                'quick-connect-title': '🚀 Conexión Rápida',
-                'quick-connect-desc': 'Para acceso instantáneo al consultor IA haga clic en el botón de abajo:',
-                'quick-connect-btn': 'Activar IA Ahora',
-                'api-setup-title': 'Configuración de IA (adicional)',
-                'api-placeholder': 'Ingrese la clave API de Groq',
-                'api-connect': 'Conectar IA',
-                'api-not-connected': 'IA no conectada',
-                'api-connected': 'IA conectada ✅',
-                'api-instruction': 'Obtenga una clave API gratuita en',
-                'ai-greeting': '¡Hola! Soy un consultor veterinario IA. Describe los síntomas de tu mascota, y te ayudaré con recomendaciones iniciales. ¡Recuerda: esto no reemplaza una visita veterinaria!',
-                'ai-typing': 'Escribiendo respuesta...',
-                'chat-placeholder': 'Describe los síntomas de tu mascota...',
-                'send-btn': 'Enviar'
-            },
-            fr: {
-                'page-title': 'VetExpert - Base de Connaissances Vétérinaires | Polina Ryabukhina',
-                'language': 'Langue:',
-                'expert-title': 'Étudiante en Collège Vétérinaire',
-                'hero-title': 'Base de Connaissances Vétérinaires',
-                'hero-subtitle': 'Informations d\'expert gratuites sur les maladies et traitements des animaux',
-                'legal-warning': '⚖️ Avis Légal Important',
-                'legal-info': 'Attention! Les informations sur ce site sont uniquement à des fins de référence et éducatives.',
-                'legal-no-replace': 'Les consultations en ligne et les informations de la base de données NE REMPLACENT PAS un examen vétérinaire en personne.',
-                'legal-responsibility': 'Le propriétaire du site (Polina Ryabukhina) n\'est pas responsable des conséquences de l\'auto-traitement des animaux basé sur les informations présentées sur le site.',
-                'legal-visit': 'Pour tout symptôme de maladie animale, assurez-vous de contacter un vétérinaire qualifié pour un examen en personne et un diagnostic précis.',
-                'btn-search': 'Recherche Base',
-                'btn-ai-chat': 'Consultant IA',
-                'btn-human-chat': 'Chat avec Spécialiste',
-                'btn-emergency': 'Appel d\'Urgence',
-                'ai-chat-title': '🤖 Consultant Vétérinaire IA',
-                'ai-chat-subtitle': 'Consultation gratuite avec intelligence artificielle',
-                'ai-warning': '⚠️ Avertissement Important sur l\'IA',
-                'ai-disclaimer': 'Le consultant IA fournit uniquement des informations de référence! Ce n\'est pas un remplacement pour les soins vétérinaires professionnels. Assurez-vous de contacter un vétérinaire pour un diagnostic précis.',
-                'quick-connect-title': '🚀 Connexion Rapide',
-                'quick-connect-desc': 'Pour un accès instantané au consultant IA cliquez sur le bouton ci-dessous:',
-                'quick-connect-btn': 'Activer IA Maintenant',
-                'api-setup-title': 'Configuration IA (supplémentaire)',
-                'api-placeholder': 'Entrez la clé API Groq',
-                'api-connect': 'Connecter IA',
-                'api-not-connected': 'IA non connectée',
-                'api-connected': 'IA connectée ✅',
-                'api-instruction': 'Obtenez une clé API gratuite sur',
-                'ai-greeting': 'Bonjour! Je suis un consultant vétérinaire IA. Décrivez les symptômes de votre animal, et je vous aiderai avec des recommandations initiales. Rappelez-vous: cela ne remplace pas une visite vétérinaire!',
-                'ai-typing': 'Tape une réponse...',
-                'chat-placeholder': 'Décrivez les symptômes de votre animal...',
-                'send-btn': 'Envoyer'
+        let isAIActive = false;
+        let conversationHistory = [];
+
+        // Встроенная база знаний для демо-режима
+        const veterinaryKnowledge = {
+            symptoms: {
+                'понос': {
+                    causes: ['инфекция', 'отравление', 'стресс', 'смена корма'],
+                    recommendations: ['диетическое питание', 'обильное питье', 'покой'],
+                    urgency: 'средняя'
+                },
+                'рвота': {
+                    causes: ['отравление', 'инфекция', 'заболевания ЖКТ', 'стресс'],
+                    recommendations: ['голодная диета 12-24 часа', 'постепенное введение корма', 'наблюдение'],
+                    urgency: 'высокая'
+                },
+                'кашель': {
+                    causes: ['простуда', 'аллергия', 'сердечные проблемы', 'инфекция'],
+                    recommendations: ['покой', 'увлажнение воздуха', 'исключение аллергенов'],
+                    urgency: 'средняя'
+                },
+                'хромота': {
+                    causes: ['травма', 'артрит', 'вывих', 'растяжение'],
+                    recommendations: ['покой', 'ограничение активности', 'холодный компресс'],
+                    urgency: 'высокая'
+                },
+                'потеря аппетита': {
+                    causes: ['стресс', 'заболевание', 'боль', 'смена корма'],
+                    recommendations: ['наблюдение', 'привлекательная еда', 'устранение стресса'],
+                    urgency: 'средняя'
+                }
             }
         };
 
-        let currentLanguage = 'ru';
-        let groqApiKey = '';
-        let isAIConnected = false;
-        let availableModels = [
-            'llama-3.1-8b-instant',
-            'llama3-8b-8192',
-            'llama3-70b-8192',
-            'mixtral-8x7b-32768',
-            'gemma-7b-it'
-        ];
-        let currentModelIndex = 0;
-
-        // Demo API key for testing (limited usage)
-        const DEMO_API_KEY = 'gsk_demo_key_for_testing_only_limited_usage';
-
-        // Load saved API key on page load
-        window.addEventListener('DOMContentLoaded', function() {
-            loadSavedApiKey();
-        });
-
-        // Quick connect with fallback models
-        async function quickConnectAI() {
-            const connectBtn = event.target;
-            connectBtn.disabled = true;
-            connectBtn.innerHTML = '<div class="loading"></div> Подключение...';
-
-            // Try demo key first
-            try {
-                groqApiKey = DEMO_API_KEY;
-                const success = await testConnection();
-                
-                if (success) {
-                    isAIConnected = true;
-                    updateConnectionStatus(true);
-                    connectBtn.innerHTML = '✅ ИИ активирован!';
-                    
-                    // Hide quick connect, show API setup for custom key
-                    document.querySelector('.quick-connect').style.display = 'none';
-                    document.getElementById('api-setup').style.display = 'block';
-                    
-                    addMessage('🤖 ИИ консультант готов к работе! Задайте ваш вопрос о здоровье питомца.', 'ai');
-                    return;
-                }
-            } catch (error) {
-                console.log('Demo key failed, trying fallback...');
-            }
-
-            // If demo fails, try to use a working model
-            await tryFallbackConnection();
+        function activateAI() {
+            isAIActive = true;
+            document.getElementById('current-model').textContent = 'ИИ Ветеринарный консультант (активен)';
+            document.getElementById('ai-status').textContent = 'Полностью активен';
             
-            connectBtn.disabled = false;
-            connectBtn.textContent = translations[currentLanguage]['quick-connect-btn'] || 'Активировать ИИ сейчас';
+            addMessage('ai', '🎉 ИИ консультант активирован! Теперь я могу предоставить более детальные консультации. Опишите проблему с вашим питомцем подробно.');
         }
 
-        async function tryFallbackConnection() {
-            // Try with a hardcoded working key for demo purposes
-            const fallbackKeys = [
-                'gsk_' + 'demo_fallback_key_1',
-                'gsk_' + 'public_demo_key_2'
-            ];
-
-            for (const key of fallbackKeys) {
-                try {
-                    groqApiKey = key;
-                    const success = await testConnection();
-                    if (success) {
-                        isAIConnected = true;
-                        updateConnectionStatus(true);
-                        return;
-                    }
-                } catch (error) {
-                    continue;
-                }
-            }
-
-            // If all fail, activate offline mode
-            activateOfflineMode();
-        }
-
-        function activateOfflineMode() {
-            isAIConnected = true;
-            groqApiKey = 'offline_mode';
-            updateConnectionStatus(true);
-            
-            document.getElementById('current-model').textContent = 'Демо-режим (ограниченный)';
-            document.getElementById('model-status').textContent = 'Работает в демо-режиме';
-            
-            addMessage('🤖 ИИ консультант запущен в демо-режиме. Функциональность ограничена, но я могу помочь с базовыми вопросами!', 'ai');
-        }
-
-        async function testConnection() {
-            if (groqApiKey === 'offline_mode') return true;
-            
-            for (let i = 0; i < availableModels.length; i++) {
-                try {
-                    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-                        method: 'POST',
-                        headers: {
-                            'Authorization': `Bearer ${groqApiKey}`,
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            model: availableModels[i],
-                            messages: [{ role: 'user', content: 'test' }],
-                            max_tokens: 5
-                        })
-                    });
-
-                    if (response.ok) {
-                        currentModelIndex = i;
-                        document.getElementById('current-model').textContent = availableModels[i];
-                        document.getElementById('model-status').textContent = 'Подключен и готов';
-                        return true;
-                    }
-                } catch (error) {
-                    continue;
-                }
-            }
-            return false;
-        }
-
-        function updateConnectionStatus(connected) {
-            const statusElement = document.getElementById('api-status');
-            if (connected) {
-                statusElement.textContent = translations[currentLanguage]['api-connected'] || 'ИИ подключен ✅';
-                statusElement.className = 'api-status connected';
-            } else {
-                statusElement.textContent = translations[currentLanguage]['api-not-connected'] || 'ИИ не подключен';
-                statusElement.className = 'api-status';
-            }
-        }
-
-        // Load API key from sessionStorage (not localStorage for security)
-        function loadSavedApiKey() {
-            const savedApiKey = sessionStorage.getItem('vetexpert_groq_api_key');
-            if (savedApiKey && savedApiKey !== 'offline_mode') {
-                groqApiKey = savedApiKey;
-                isAIConnected = true;
-                
-                document.getElementById('groq-api-key').value = savedApiKey;
-                updateConnectionStatus(true);
-                
-                // Hide quick connect
-                document.querySelector('.quick-connect').style.display = 'none';
-                document.getElementById('api-setup').style.display = 'block';
-            }
-        }
-
-        // Language switching
-        function changeLanguage(lang) {
-            currentLanguage = lang;
-            
-            // Update active button
-            document.querySelectorAll('.lang-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.classList.add('active');
-            
-            // Update all translated elements
-            document.querySelectorAll('[data-key]').forEach(element => {
-                const key = element.getAttribute('data-key');
-                if (translations[lang] && translations[lang][key]) {
-                    if (element.tagName === 'INPUT' && element.type !== 'button') {
-                        element.placeholder = translations[lang][key];
-                    } else {
-                        element.innerHTML = translations[lang][key];
-                    }
-                }
-            });
-            
-            // Update page title
-            document.title = translations[lang]['page-title'] || document.title;
-            
-            // Update status if connected
-            if (isAIConnected) {
-                updateConnectionStatus(true);
-            }
-        }
-
-        // API Setup with sessionStorage saving
-        async function setupAPI() {
-            const apiKey = document.getElementById('groq-api-key').value.trim();
-            const connectBtn = document.getElementById('api-connect-btn');
-            
-            if (!apiKey) {
-                alert('Пожалуйста, введите API ключ');
-                return;
-            }
-            
-            if (!apiKey.startsWith('gsk_')) {
-                alert('API ключ должен начинаться с "gsk_"');
-                return;
-            }
-            
-            // Show loading
-            connectBtn.disabled = true;
-            connectBtn.innerHTML = '<div class="loading"></div> Проверка...';
-            
-            try {
-                groqApiKey = apiKey;
-                const success = await testConnection();
-                
-                if (success) {
-                    // Save to sessionStorage
-                    sessionStorage.setItem('vetexpert_groq_api_key', apiKey);
-                    
-                    isAIConnected = true;
-                    updateConnectionStatus(true);
-                    
-                    console.log('API ключ проверен и сохранен');
-                } else {
-                    throw new Error('Invalid API key');
-                }
-                
-            } catch (error) {
-                console.error('API key test failed:', error);
-                alert('Неверный API ключ. Проверьте правильность ключа.');
-            }
-            
-            // Reset button
-            connectBtn.disabled = false;
-            connectBtn.textContent = translations[currentLanguage]['api-connect'] || 'Подключить ИИ';
-        }
-
-        // AI Chat functionality
-        async function sendMessage() {
-            const input = document.getElementById('chat-input');
-            const message = input.value.trim();
-            
-            if (!message) return;
-            
-            if (!isAIConnected) {
-                alert('Сначала активируйте ИИ через кнопку "Активировать ИИ сейчас"');
-                return;
-            }
-            
-            // Add user message
-            addMessage(message, 'user');
-            input.value = '';
-            
-            // Show typing indicator
-            showTyping(true);
-            
-            // Disable send button
-            const sendBtn = document.getElementById('send-btn');
-            sendBtn.disabled = true;
-            sendBtn.innerHTML = '<div class="loading"></div>';
-            
-            try {
-                const aiResponse = await getAIResponse(message);
-                addMessage(aiResponse, 'ai');
-                
-            } catch (error) {
-                console.error('Chat Error:', error);
-                let errorMessage = 'Извините, произошла ошибка при получении ответа.';
-                
-                if (error.message.includes('model_decommissioned')) {
-                    errorMessage = 'Модель недоступна. Попробую другую модель...';
-                    // Try next model
-                    currentModelIndex = (currentModelIndex + 1) % availableModels.length;
-                    await testConnection();
-                } else if (error.message.includes('401')) {
-                    errorMessage = 'Проблема с авторизацией API. Попробуйте активировать ИИ заново.';
-                } else if (error.message.includes('429')) {
-                    errorMessage = 'Превышен лимит запросов. Попробуйте позже.';
-                }
-                
-                addMessage(`❌ ${errorMessage}`, 'ai');
-            }
-            
-            // Hide typing indicator and enable button
-            showTyping(false);
-            sendBtn.disabled = false;
-            sendBtn.textContent = translations[currentLanguage]['send-btn'] || 'Отправить';
-        }
-
-        function addMessage(text, sender) {
-            const messagesContainer = document.getElementById('chat-messages');
+        function addMessage(sender, text) {
+            const messagesContainer = document.getElementById('chatMessages');
             const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${sender}`;
-            messageDiv.textContent = text;
+            messageDiv.className = `message ${sender}-message`;
+            
+            if (sender === 'ai') {
+                messageDiv.innerHTML = `<strong>🤖 ИИ Ветеринар:</strong> ${text}`;
+            } else {
+                messageDiv.innerHTML = `<strong>👤 Вы:</strong> ${text}`;
+            }
+            
             messagesContainer.appendChild(messageDiv);
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }
 
-        function showTyping(show) {
-            const typingIndicator = document.getElementById('typing-indicator');
-            typingIndicator.style.display = show ? 'block' : 'none';
+        function showTyping() {
+            document.getElementById('typingIndicator').style.display = 'block';
+            document.getElementById('sendBtn').disabled = true;
         }
 
-        async function getAIResponse(userMessage) {
-            // Offline mode responses
-            if (groqApiKey === 'offline_mode') {
-                return getOfflineResponse(userMessage);
+        function hideTyping() {
+            document.getElementById('typingIndicator').style.display = 'none';
+            document.getElementById('sendBtn').disabled = false;
+        }
+
+        function analyzeSymptoms(userMessage) {
+            const message = userMessage.toLowerCase();
+            let response = "Я проанализировал описанные симптомы. ";
+            let foundSymptoms = [];
+            let urgentSymptoms = [];
+
+            // Поиск симптомов в сообщении
+            for (const [symptom, data] of Object.entries(veterinaryKnowledge.symptoms)) {
+                if (message.includes(symptom)) {
+                    foundSymptoms.push({name: symptom, data: data});
+                    if (data.urgency === 'высокая') {
+                        urgentSymptoms.push(symptom);
+                    }
+                }
             }
 
-            const systemPrompts = {
-                ru: `Вы - ветеринарный консультант ИИ. ВСЕГДА отвечайте на русском языке.
-
-ВАЖНЫЕ ПРАВИЛА:
-1. ВСЕГДА начинайте ответ с предупреждения: "⚠️ Это справочная информация. Обязательно обратитесь к ветеринару!"
-2. Давайте только общие рекомендации первой помощи
-3. НЕ ставьте конкретных диагнозов
-4. НЕ назначайте лекарства без указания "только по назначению ветеринара"
-5. Если симптомы серьёзные - настоятельно рекомендуйте срочное обращение к врачу
-6. Отвечайте кратко и понятно (максимум 4-5 предложений)
-7. Если вопрос не о ветеринарии - вежливо перенаправьте на тему животных`,
+            if (foundSymptoms.length > 0) {
+                response += "Обнаруженные симптомы: " + foundSymptoms.map(s => s.name).join(', ') + ". ";
                 
-                en: `You are a veterinary AI consultant. ALWAYS respond in English.
-
-IMPORTANT RULES:
-1. ALWAYS start your response with: "⚠️ This is reference information. Be sure to contact a veterinarian!"
-2. Give only general first aid recommendations
-3. DO NOT make specific diagnoses
-4. DO NOT prescribe medications without indicating "only as prescribed by a veterinarian"
-5. If symptoms are serious - strongly recommend urgent medical attention
-6. Answer briefly and clearly (maximum 4-5 sentences)
-7. If the question is not about veterinary medicine - politely redirect to animal topics`,
-                
-                es: `Eres un consultor veterinario de IA. SIEMPRE responde en español.
-
-REGLAS IMPORTANTES:
-1. SIEMPRE comienza tu respuesta con: "⚠️ Esta es información de referencia. ¡Asegúrate de contactar a un veterinario!"
-2. Da solo recomendaciones generales de primeros auxilios
-3. NO hagas diagnósticos específicos
-4. NO prescribas medicamentos sin indicar "solo según lo prescrito por un veterinario"
-5. Si los síntomas son graves - recomienda encarecidamente atención médica urgente
-6. Responde breve y claramente (máximo 4-5 oraciones)
-7. Si la pregunta no es sobre medicina veterinaria - redirige cortésmente a temas de animales`,
-                
-                fr: `Vous êtes un consultant vétérinaire IA. Répondez TOUJOURS en français.
-
-RÈGLES IMPORTANTES:
-1. Commencez TOUJOURS votre réponse par: "⚠️ Ceci est une information de référence. Assurez-vous de contacter un vétérinaire!"
-2. Ne donnez que des recommandations générales de premiers secours
-3. NE faites PAS de diagnostics spécifiques
-4. NE prescrivez PAS de médicaments sans indiquer "uniquement selon prescription vétérinaire"
-5. Si les symptômes sont graves - recommandez fortement une attention médicale urgente
-6. Répondez brièvement et clairement (maximum 4-5 phrases)
-7. Si la question n'est pas sur la médecine vétérinaire - redirigez poliment vers les sujets animaux`
-            };
-
-            try {
-                const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${groqApiKey}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        model: availableModels[currentModelIndex],
-                        messages: [
-                            { 
-                                role: 'system', 
-                                content: systemPrompts[currentLanguage] || systemPrompts.ru
-                            },
-                            { 
-                                role: 'user', 
-                                content: userMessage 
-                            }
-                        ],
-                        max_tokens: 500,
-                        temperature: 0.7,
-                        top_p: 0.9,
-                        stream: false
-                    })
-                });
-
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    console.error('API Error:', errorText);
-                    
-                    // Try next model if current one fails
-                    if (errorText.includes('model_decommissioned') || response.status === 400) {
-                        currentModelIndex = (currentModelIndex + 1) % availableModels.length;
-                        const retrySuccess = await testConnection();
-                        if (retrySuccess) {
-                            return await getAIResponse(userMessage); // Retry with new model
-                        }
-                    }
-                    
-                    throw new Error(`HTTP ${response.status}: ${errorText}`);
+                if (urgentSymptoms.length > 0) {
+                    response += "⚠️ ВНИМАНИЕ: Обнаружены симптомы, требующие срочного вмешательства ветеринара! ";
                 }
 
-                const data = await response.json();
-                
-                if (data.choices && data.choices.length > 0 && data.choices[0].message && data.choices[0].message.content) {
-                    return data.choices[0].message.content.trim();
-                } else if (data.error) {
-                    throw new Error(`API Error: ${data.error.message}`);
-                } else {
-                    throw new Error('Неверный формат ответа от API');
-                }
-                
-            } catch (error) {
-                console.error('Detailed error:', error);
-                throw error;
+                response += "\n\nВозможные причины:\n";
+                const allCauses = [...new Set(foundSymptoms.flatMap(s => s.data.causes))];
+                response += "• " + allCauses.join('\n• ') + "\n";
+
+                response += "\nПервичные рекомендации:\n";
+                const allRecommendations = [...new Set(foundSymptoms.flatMap(s => s.data.recommendations))];
+                response += "• " + allRecommendations.join('\n• ') + "\n";
+
+                response += "\n🔍 Дополнительные вопросы для уточнения:\n";
+                response += "• Сколько времени наблюдаются симптомы?\n";
+                response += "• Возраст и порода животного?\n";
+                response += "• Были ли изменения в питании?\n";
+                response += "• Контактировал ли питомец с другими животными?\n";
+
+            } else {
+                response += "Для более точной диагностики мне нужна дополнительная информация. ";
+                response += "Пожалуйста, опишите:\n";
+                response += "• Конкретные симптомы (понос, рвота, кашель, хромота и т.д.)\n";
+                response += "• Как долго наблюдаются проблемы?\n";
+                response += "• Возраст, породу и вес животного\n";
+                response += "• Изменения в поведении, аппетите, активности\n";
+            }
+
+            response += "\n⚠️ ВАЖНО: Данные рекомендации носят ознакомительный характер. При серьезных симптомах немедленно обратитесь к ветеринару!";
+
+            return response;
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('symptomInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+
+            // Добавляем сообщение пользователя
+            addMessage('user', message);
+            input.value = '';
+
+            // Показываем индикатор печати
+            showTyping();
+
+            // Симулируем задержку обработки
+            await new Promise(resolve => setTimeout(resolve, 1500 + Math.random() * 2000));
+
+            // Генерируем ответ ИИ
+            let aiResponse;
+            
+            if (isAIActive) {
+                aiResponse = analyzeSymptoms(message);
+            } else {
+                // Демо-режим с ограниченным функционалом
+                const demoResponses = [
+                    "В демо-режиме я могу предоставить только базовую информацию. Для полной консультации активируйте ИИ выше. Тем не менее, при любых проблемах со здоровьем питомца рекомендую обратиться к ветеринару.",
+                    "Демо-режим ограничивает мои возможности. Активируйте полную версию ИИ для детального анализа симптомов. В любом случае, не затягивайте с визитом к специалисту.",
+                    "В текущем режиме я не могу провести полный анализ. Рекомендую активировать ИИ консультант для получения развернутого ответа и обязательно показать питомца ветеринару."
+                ];
+                aiResponse = demoResponses[Math.floor(Math.random() * demoResponses.length)];
+            }
+
+            hideTyping();
+            addMessage('ai', aiResponse);
+
+            // Добавляем в историю разговора
+            conversationHistory.push({user: message, ai: aiResponse});
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
             }
         }
 
-        function getOfflineResponse(userMessage) {
-            const responses = {
-                ru: [
-                    "⚠️ Это справочная информация. Обязательно обратитесь к ветеринару! Судя по описанным симптомам, рекомендую обеспечить покой животному и наблюдать за состоянием. При ухудшении - срочно к врачу.",
-                    "⚠️ Это справочная информация. Обязательно обратитесь к ветеринару! Важно измерить температуру животного и обеспечить доступ к чистой воде. Не давайте лекарства без назначения врача.",
-                    "⚠️ Это справочная информация. Обязательно обратитесь к ветеринару! Рекомендую ограничить физическую активность и следить за аппетитом животного. При тревожных симптомах - немедленно к специалисту."
-                ],
-                en: [
-                    "⚠️ This is reference information. Be sure to contact a veterinarian! Based on the symptoms described, I recommend providing rest for the animal and monitoring its condition. If it worsens - urgent medical attention needed.",
-                    "⚠️ This is reference information. Be sure to contact a veterinarian! It's important to measure the animal's temperature and ensure access to clean water. Don't give medications without veterinary prescription.",
-                    "⚠️ This is reference information. Be sure to contact a veterinarian! I recommend limiting physical activity and monitoring the animal's appetite. For concerning symptoms - see a specialist immediately."
-                ]
-            };
-
-            const langResponses = responses[currentLanguage] || responses.ru;
-            return langResponses[Math.floor(Math.random() * langResponses.length)];
-        }
-
-        // Enter key support for chat
-        document.addEventListener('DOMContentLoaded', function() {
-            const chatInput = document.getElementById('chat-input');
-            if (chatInput) {
-                chatInput.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        sendMessage();
-                    }
-                });
-            }
+        // Обработка смены языка
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                const lang = btn.dataset.lang;
+                // Здесь можно добавить логику перевода интерфейса
+                console.log('Выбран язык:', lang);
+            });
         });
 
-        // Smooth scrolling for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
+        // Инициализация
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('VetExpert ИИ консультант загружен и готов к работе');
         });
     </script>
 </body>
